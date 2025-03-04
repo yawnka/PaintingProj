@@ -64,8 +64,9 @@
     <Analyzer Include="/Applications/Unity/Hub/Editor/6000.0.36f1/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets/Painter.cs" />
-    <Compile Include="Assets/ColorButton.cs" />
+    <Compile Include="Assets/Scripts/ColorModeToggle.cs" />
+    <Compile Include="Assets/Scripts/Painter.cs" />
+    <Compile Include="Assets/Scripts/ColorButton.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets/TextMesh Pro/Shaders/TMPro.cginc" />
