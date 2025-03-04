@@ -8,11 +8,15 @@ public class Painter : MonoBehaviour
 
     private Texture2D texture;
 
+    public GameObject cam;
+    private CameraShake cam_shake;
+
     void Start()
     {
         texture = new Texture2D(512, 512);
         canvasImage.texture = texture;
-        ClearCanvas();
+        cam_shake = cam.GetComponent<CameraShake>();
+        ClearCanvas(0.0f);
     }
 
     void Update()
@@ -63,8 +67,10 @@ public class Painter : MonoBehaviour
         selectedColor = color;
     }
 
-    public void ClearCanvas()
+    public void ClearCanvas(float shake_amount)
     {
+        cam_shake.shake_amount = shake_amount;
+        cam_shake.shake_dur = 0.5f;
         for (int x = 0; x < texture.width; x++)
             for (int y = 0; y < texture.height; y++)
                 texture.SetPixel(x, y, Color.white);
