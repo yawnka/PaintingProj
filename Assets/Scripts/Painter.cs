@@ -7,12 +7,32 @@ public class Painter : MonoBehaviour
     public Color selectedColor = Color.black;
     public AudioSource colorSelect;
     public AudioSource brushSound;
+    public GameObject easel;
+    public GameObject color_palette;
+    public Sprite palette;
+    public Sprite empty;
+    public GameObject background;
+    
+   
 
     private Texture2D texture;
     private Color[,] pixelColorMap;
     private bool isBlackAndWhite = false;
     private bool hasSound = false;
     private bool isDrawing = false;
+    private bool isMoved = false;
+    private bool active_bg = false;
+
+
+    private Vector3 moved_pos;
+    private Vector3 begin_pos = Vector3.zero;
+    private Vector3 begin_scale = Vector3.one;
+    private Vector3 moved_scale;
+
+    private Vector3 easel_moved_pos;
+    private Vector3 easel_moved_scale;
+    private Vector3 easel_begin_pos;
+    private Vector3 easel_begin_scale;
 
     void Awake()
     {
@@ -25,6 +45,18 @@ public class Painter : MonoBehaviour
     {
         ClearCanvas();
         ToggleBlackAndWhiteMode(true);
+
+
+        begin_pos = transform.position;
+        begin_scale = transform.localScale;
+        moved_scale = new Vector3(transform.localScale.x - 0.1f, transform.localScale.y + 0.4f, transform.localScale.z);
+        moved_pos = new Vector3(1400, 600, 0);
+
+
+        easel_begin_pos = color_palette.transform.position;
+        easel_begin_scale = color_palette.transform.localScale;
+        easel_moved_scale = new Vector3(color_palette.transform.localScale.x - 0.5f, color_palette.transform.localScale.y + 1f, color_palette.transform.localScale.z);
+        easel_moved_pos = new Vector3(500, 300, 0);
     }
 
     void Update()
@@ -130,5 +162,47 @@ public class Painter : MonoBehaviour
     public void ToggleSFX()
     {
         hasSound = !hasSound;
+    }
+
+    public void ToggleBackground()
+    {
+        if (active_bg)
+        {
+            active_bg = false;
+            background.SetActive(false);
+        }
+        else
+        {
+            background.SetActive(true);
+            active_bg = true;
+        }
+    }
+
+    public void ToggleSize()
+    {
+        if (!(isMoved))
+        {
+            transform.position = moved_pos;
+            transform.localScale = moved_scale;
+            color_palette.transform.position = easel_moved_pos;
+            color_palette.transform.localScale = easel_moved_scale;
+            easel.SetActive(true);
+            color_palette.GetComponent<Image>().sprite = palette;
+            isMoved = true;
+            print("true");
+            print(transform.position);
+        }
+        else
+        {
+            transform.position = begin_pos;
+            transform.localScale = begin_scale;
+            color_palette.transform.position = easel_begin_pos;
+            color_palette.transform.localScale = easel_begin_scale;
+            easel.SetActive(false);
+            color_palette.GetComponent<Image>().sprite = empty;
+            isMoved = false;
+            print("false");
+            print(transform.position);
+        }
     }
 }
