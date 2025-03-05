@@ -11,23 +11,14 @@ public class Painter : MonoBehaviour
     public EffectManager effects;
 
     public AudioManager audioManager;
-    public AudioSource colorSelect;
-    public AudioSource brushSound;
     public GameObject easel;
     public GameObject color_palette;
     public Sprite palette;
     public Sprite empty;
-    public GameObject background;
-    
-   
 
     private Texture2D texture;
     private Color[,] pixelColorMap;
-    private bool isBlackAndWhite = false;
-    private bool hasSound = false;
-    private bool isDrawing = false;
     private bool isMoved = false;
-    private bool active_bg = false;
 
 
     private Vector3 moved_pos;
@@ -91,12 +82,6 @@ public class Painter : MonoBehaviour
         else{
             audioManager.StopPainting();
         }
-
-        if (Input.GetMouseButtonUp(0))
-        {
-            brushSound.Stop();
-            isDrawing = false;
-        }
     }
 
     Vector2Int ConvertToPixel(Vector2 localPoint)
@@ -109,13 +94,13 @@ public class Painter : MonoBehaviour
 
     public void ToggleBlackAndWhiteMode(bool state)
     {
-        isBlackAndWhite = state;
+        effects.color = state;
 
         for (int x = 0; x < texture.width; x++)
         {
             for (int y = 0; y < texture.height; y++)
             {
-                texture.SetPixel(x, y, isBlackAndWhite ? ConvertToGrayscale(pixelColorMap[x, y]) : pixelColorMap[x, y]);
+                texture.SetPixel(x, y, effects.color ? ConvertToGrayscale(pixelColorMap[x, y]) : pixelColorMap[x, y]);
             }
         }
 
@@ -141,15 +126,10 @@ public class Painter : MonoBehaviour
                 int newY = Mathf.Clamp(y + j, 0, texture.height - 1);
 
                 pixelColorMap[newX, newY] = selectedColor;
-                texture.SetPixel(newX, newY, isBlackAndWhite ? ConvertToGrayscale(selectedColor) : selectedColor);
+                texture.SetPixel(newX, newY, effects.color ? ConvertToGrayscale(selectedColor) : selectedColor);
             }
         }
 
-        if (hasSound && !(isDrawing))
-        {
-            isDrawing = true;
-            brushSound.Play();
-        }
 
         texture.Apply();
     }
@@ -157,10 +137,7 @@ public class Painter : MonoBehaviour
     public void SetColor(Color color)
     {
         audioManager.Dip();
-        if (hasSound)
-        {
-            colorSelect.Play();
-        }
+
         selectedColor = color;
     }
 
@@ -183,25 +160,7 @@ public class Painter : MonoBehaviour
         return new Color(gray, gray, gray);
     }
 
-    public void ToggleSFX()
-    {
-        hasSound = !hasSound;
-    }
-
-    public void ToggleBackground()
-    {
-        if (active_bg)
-        {
-            active_bg = false;
-            background.SetActive(false);
-        }
-        else
-        {
-            background.SetActive(true);
-            active_bg = true;
-        }
-    }
-
+    
     public void ToggleSize()
     {
         if (!(isMoved))
