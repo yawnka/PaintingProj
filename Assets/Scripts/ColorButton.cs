@@ -23,7 +23,6 @@ public class ColorButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         UpdateButtonColor();
         GetComponent<Button>().onClick.AddListener(() => painter.SetColor(originalColor));
     }
-    }
 
     public void OnPointerEnter(PointerEventData eventData) {
         if (effects.hover_enlarge){
