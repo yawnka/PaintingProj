@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Frame_D-Wood_05-256x256_0: 6644175361200817820
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

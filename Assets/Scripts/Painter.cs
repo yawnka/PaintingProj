@@ -5,6 +5,12 @@ public class Painter : MonoBehaviour
 {
     public RawImage canvasImage;
     public Color selectedColor = Color.black;
+
+    public GameObject cam;
+    private CameraShake cam_shake;
+    public EffectManager effects;
+
+    public AudioManager audioManager;
     public AudioSource colorSelect;
     public AudioSource brushSound;
     public GameObject easel;
@@ -57,6 +63,14 @@ public class Painter : MonoBehaviour
         easel_begin_scale = color_palette.transform.localScale;
         easel_moved_scale = new Vector3(color_palette.transform.localScale.x - 0.5f, color_palette.transform.localScale.y + 1f, color_palette.transform.localScale.z);
         easel_moved_pos = new Vector3(500, 300, 0);
+
+        texture = new Texture2D(512, 512);
+        canvasImage.texture = texture;
+
+        effects = GameObject.Find("Effect Manager").GetComponent<EffectManager>();
+        audioManager = GameObject.Find("Audio Manager").GetComponent<AudioManager>();
+        cam_shake = cam.GetComponent<CameraShake>();
+
     }
 
     void Update()
@@ -65,15 +79,19 @@ public class Painter : MonoBehaviour
         {
             Vector2 localPoint;
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                canvasImage.rectTransform,
-                Input.mousePosition,
-                null,
+                canvasImage.rectTransform, 
+                Input.mousePosition, 
+                null, 
                 out localPoint
             );
 
             Vector2Int pixelUV = ConvertToPixel(localPoint);
             DrawPixel(pixelUV.x, pixelUV.y);
         }
+        else{
+            audioManager.StopPainting();
+        }
+
         if (Input.GetMouseButtonUp(0))
         {
             brushSound.Stop();
@@ -103,10 +121,16 @@ public class Painter : MonoBehaviour
 
         texture.Apply();
     }
-
     void DrawPixel(int x, int y)
     {
-        int brushSize = 10;
+        if( x < 500 && x > 0 && y < 500 && y > 0){
+            audioManager.Paint();
+        }
+        else{
+            audioManager.StopPainting();
+        }
+
+        int brushSize = 5;
         Color paintColor = selectedColor;
 
         for (int i = -brushSize / 2; i <= brushSize / 2; i++)
@@ -132,6 +156,7 @@ public class Painter : MonoBehaviour
 
     public void SetColor(Color color)
     {
+        audioManager.Dip();
         if (hasSound)
         {
             colorSelect.Play();
@@ -141,14 +166,13 @@ public class Painter : MonoBehaviour
 
     public void ClearCanvas()
     {
-        for (int x = 0; x < texture.width; x++)
-        {
-            for (int y = 0; y < texture.height; y++)
-            {
-                texture.SetPixel(x, y, Color.white);
-                pixelColorMap[x, y] = Color.white;
-            }
+        audioManager.Erase();
+        if (effects.shake_on_clear){
+            cam_shake.shake_dur = 0.5f;
         }
+        for (int x = 0; x < texture.width; x++)
+            for (int y = 0; y < texture.height; y++)
+                texture.SetPixel(x, y, Color.white);
 
         texture.Apply();
     }
@@ -205,4 +229,6 @@ public class Painter : MonoBehaviour
             print(transform.position);
         }
     }
+
+        
 }
