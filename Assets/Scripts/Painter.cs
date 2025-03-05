@@ -40,8 +40,6 @@ public class Painter : MonoBehaviour
 
     void Start()
     {
-        ClearCanvas();
-        ToggleBlackAndWhiteMode(true);
 
 
         begin_pos = transform.position;
@@ -61,7 +59,9 @@ public class Painter : MonoBehaviour
         effects = GameObject.Find("Effect Manager").GetComponent<EffectManager>();
         audioManager = GameObject.Find("Audio Manager").GetComponent<AudioManager>();
         cam_shake = cam.GetComponent<CameraShake>();
-
+        Debug.Log(cam_shake);
+        ClearCanvas();
+        ToggleBlackAndWhiteMode(true);
     }
 
     void Update()
@@ -145,7 +145,7 @@ public class Painter : MonoBehaviour
     {
         audioManager.Erase();
         if (effects.shake_on_clear){
-            cam_shake.shake_dur = 0.5f;
+            cam_shake.shake_dur = 0.3f;
         }
         for (int x = 0; x < texture.width; x++)
             for (int y = 0; y < texture.height; y++)

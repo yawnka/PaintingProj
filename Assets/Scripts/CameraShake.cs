@@ -4,7 +4,7 @@ public class CameraShake : MonoBehaviour
 {
     private Vector3 init_pos;
     public float shake_dur = 0f;
-    public float shake_amount = 10.0f;
+    public float shake_amount = 5.0f;
 
     void Start()
     {
