@@ -5,10 +5,14 @@ public class Painter : MonoBehaviour
 {
     public RawImage canvasImage;
     public Color selectedColor = Color.black;
+    public AudioSource colorSelect;
+    public AudioSource brushSound;
 
     private Texture2D texture;
     private Color[,] pixelColorMap;
     private bool isBlackAndWhite = false;
+    private bool hasSound = false;
+    private bool isDrawing = false;
 
     void Awake()
     {
@@ -37,6 +41,11 @@ public class Painter : MonoBehaviour
 
             Vector2Int pixelUV = ConvertToPixel(localPoint);
             DrawPixel(pixelUV.x, pixelUV.y);
+        }
+        if (Input.GetMouseButtonUp(0))
+        {
+            brushSound.Stop();
+            isDrawing = false;
         }
     }
 
@@ -80,11 +89,21 @@ public class Painter : MonoBehaviour
             }
         }
 
+        if (hasSound && !(isDrawing))
+        {
+            isDrawing = true;
+            brushSound.Play();
+        }
+
         texture.Apply();
     }
 
     public void SetColor(Color color)
     {
+        if (hasSound)
+        {
+            colorSelect.Play();
+        }
         selectedColor = color;
     }
 
@@ -106,5 +125,10 @@ public class Painter : MonoBehaviour
     {
         float gray = (color.r + color.g + color.b) / 3f;
         return new Color(gray, gray, gray);
+    }
+
+    public void ToggleSFX()
+    {
+        hasSound = !hasSound;
     }
 }

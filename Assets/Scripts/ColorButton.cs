@@ -8,6 +8,7 @@ public class ColorButton : MonoBehaviour
 
     private Color originalColor;
     private bool isBlackAndWhite = true;
+    private bool hasSound = false;
 
     void Start()
     {
